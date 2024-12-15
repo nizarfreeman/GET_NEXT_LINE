@@ -6,7 +6,7 @@
 /*   By: nfaska <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/13 15:19:31 by nfaska            #+#    #+#             */
-/*   Updated: 2024/12/15 01:18:23 by nfaska           ###   ########.fr       */
+/*   Updated: 2024/12/15 23:01:47 by nfaska           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "get_next_line.h"
@@ -16,9 +16,9 @@ size_t	ft_strlen(char *s)
 	char	*p;
 
 	p = s;
-	while (*s)
-		s++;
-	return (s - p);
+	while (*p)
+		p++;
+	return (p - s);
 }
 
 void	copy(char **p, char *s)
