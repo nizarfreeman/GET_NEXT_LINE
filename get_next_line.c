@@ -6,7 +6,7 @@
 /*   By: nfaska <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/13 15:20:44 by nfaska            #+#    #+#             */
-/*   Updated: 2024/12/14 15:51:11 by nfaska           ###   ########.fr       */
+/*   Updated: 2024/12/15 01:20:13 by nfaska           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "get_next_line.h"
@@ -14,9 +14,9 @@
 char	*get_line(int fd, char **line)
 {
 	char	*buff;
-	ssize_t	i;
+	ssize_t		i;
 
-	buff = malloc(((size_t)(BUFFER_SIZE)) + 1);
+	buff = malloc(((size_t)(BUFFER_SIZE)) + 1 );
 	if (!buff)
 		return (NULL);
 	i = 1;
@@ -30,10 +30,10 @@ char	*get_line(int fd, char **line)
 			return (NULL);
 		}
 		if (i == 0)
-			break ;
-		buff[i] = '\0';
+			break;
+		buff[(int) i] = '\0';
 		*line = ft_strjoin(*line, buff);
-		if (search(*line))
+		if (search(*line) != -1)
 			break ;
 	}
 	free(buff);
@@ -48,7 +48,9 @@ char	*make_shyata(char *line)
 	if (!line)
 		return (NULL);
 	index = search(line);
-	ret = malloc(ft_strlen(line + index) + 1);
+	if (index == -1)
+		return (NULL);
+	ret = malloc(ft_strlen(line) - index);
 	if (!ret)
 		return (NULL);
 	ft_strcpy(ret, line + index + 1);
@@ -64,6 +66,8 @@ char	*make_half(char *line)
 	if (!line)
 		return (NULL);
 	index = search(line);
+	if (index == -1)
+		return (NULL);
 	ret = malloc(index + 2);
 	if (!ret)
 		return (NULL);
@@ -102,7 +106,8 @@ char	*get_next_line(int fd)
 	char		*line;
 	char		*half;
 
-	if (fd < 0 || BUFFER_SIZE <= 0 || BUFFER_SIZE > INT_MAX || read(fd, 0, 0) < 0)
+	if (fd < 0 || BUFFER_SIZE <= 0 || BUFFER_SIZE > INT_MAX
+		|| read(fd, 0, 0) < 0)
 		return (NULL);
 	line = NULL;
 	if (shyata)
@@ -111,7 +116,7 @@ char	*get_next_line(int fd)
 	line = get_line(fd, &line);
 	if (!line)
 		return (NULL);
-	if (search(line))
+	if (search(line) != -1)
 	{
 		shyata = make_shyata(line);
 		half = make_half(line);
