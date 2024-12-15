@@ -6,7 +6,7 @@
 /*   By: nfaska <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/13 20:31:38 by nfaska            #+#    #+#             */
-/*   Updated: 2024/12/14 15:50:01 by nfaska           ###   ########.fr       */
+/*   Updated: 2024/12/15 23:09:43 by nfaska           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "get_next_line_bonus.h"
@@ -16,11 +16,10 @@ char	*get_line(int fd, char **line)
 	char	*buff;
 	ssize_t	i;
 
-	buff = malloc(BUFFER_SIZE + 1);
+	buff = malloc(((size_t)(BUFFER_SIZE)) + 1);
 	if (!buff)
 		return (NULL);
-	i = 1;
-	while (i > 0)
+	while (1)
 	{
 		i = read(fd, buff, BUFFER_SIZE);
 		if (i < 0)
@@ -33,7 +32,7 @@ char	*get_line(int fd, char **line)
 			break ;
 		buff[i] = '\0';
 		*line = ft_strjoin(*line, buff);
-		if (search(*line))
+		if (search(*line) != -1)
 			break ;
 	}
 	free(buff);
@@ -48,7 +47,9 @@ char	*make_shyata(char *line)
 	if (!line)
 		return (NULL);
 	index = search(line);
-	ret = malloc(ft_strlen(line + index) + 1);
+	if (index < 0)
+		return (NULL);
+	ret = malloc(ft_strlen(line) - index);
 	if (!ret)
 		return (NULL);
 	ft_strcpy(ret, line + index + 1);
@@ -64,16 +65,18 @@ char	*make_half(char *line)
 	if (!line)
 		return (NULL);
 	index = search(line);
+	if (index < 0)
+		return (line);
 	ret = malloc(index + 2);
 	if (!ret)
 		return (NULL);
-	ret[index + 1] = '\0';
 	i = 0;
 	while (i <= index)
 	{
 		ret[i] = line[i];
 		i++;
 	}
+	ret[i] = '\0';
 	return (ret);
 }
 
@@ -81,7 +84,7 @@ int	process_shyata(char **line, char **shyata, char **half)
 {
 	char	*tmp;
 
-	if (!search(*shyata))
+	if (search(*shyata) == -1)
 	{
 		*line = ft_strjoin(*shyata, NULL);
 		*shyata = NULL;
@@ -89,8 +92,6 @@ int	process_shyata(char **line, char **shyata, char **half)
 	}
 	tmp = *shyata;
 	*half = make_half(*shyata);
-	if (!*half)
-		free(*half);
 	*shyata = make_shyata(*shyata);
 	free(tmp);
 	return (1);
@@ -98,12 +99,12 @@ int	process_shyata(char **line, char **shyata, char **half)
 
 char	*get_next_line(int fd)
 {
-	static char	*shyata[1024] = {NULL};
+	static char	*shyata[OPEN_MAX] = {NULL};
 	char		*line;
 	char		*half;
 
-	if (fd < 0 || BUFFER_SIZE <= 0 || BUFFER_SIZE > INT_MAX
-		|| read(fd, 0, 0) < 0)
+	if (fd < 0 || fd > OPEN_MAX - 1 || BUFFER_SIZE <= 0
+		|| BUFFER_SIZE > INT_MAX || read(fd, 0, 0) < 0)
 		return (NULL);
 	line = NULL;
 	if (shyata[fd])
@@ -112,7 +113,7 @@ char	*get_next_line(int fd)
 	line = get_line(fd, &line);
 	if (!line)
 		return (NULL);
-	if (search(line))
+	if (search(line) != -1)
 	{
 		shyata[fd] = make_shyata(line);
 		half = make_half(line);
