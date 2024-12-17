@@ -6,10 +6,9 @@
 /*   By: nfaska <nfaska@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/13 15:31:56 by nfaska            #+#    #+#             */
-/*   Updated: 2024/12/17 01:31:00 by nfaska           ###   ########.fr       */
+/*   Updated: 2024/12/17 21:05:13 by nfaska           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
 #ifndef GET_NEXT_LINE_H
 # define GET_NEXT_LINE_H
 # include <unistd.h>

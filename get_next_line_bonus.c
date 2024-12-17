@@ -6,7 +6,7 @@
 /*   By: nfaska <nfaska@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/13 20:31:38 by nfaska            #+#    #+#             */
-/*   Updated: 2024/12/17 01:47:35 by nfaska           ###   ########.fr       */
+/*   Updated: 2024/12/17 19:34:27 by nfaska           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,7 +107,7 @@ char	*get_next_line(int fd)
 	char		*half;
 
 	if (fd < 0 || fd > OPEN_MAX - 1 || BUFFER_SIZE <= 0
-		|| BUFFER_SIZE > INT_MAX || read(fd, 0, 0) < 0)
+		|| (signed)BUFFER_SIZE < 0 || read(fd, 0, 0) < 0)
 	{
 		free(shyata[fd]);
 		return (shyata[fd] = NULL, NULL);
