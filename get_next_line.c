@@ -3,15 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nfaska <marvin@42.fr>                      +#+  +:+       +#+        */
+/*   By: nfaska <nfaska@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/13 15:20:44 by nfaska            #+#    #+#             */
-/*   Updated: 2024/12/15 21:33:44 by nfaska           ###   ########.fr       */
+/*   Updated: 2024/12/17 01:40:08 by nfaska           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
 #include "get_next_line.h"
 
-char	*get_line(int fd, char **line)
+static char	*get_line(int fd, char **line)
 {
 	char	*buff;
 	ssize_t	i;
@@ -39,7 +40,7 @@ char	*get_line(int fd, char **line)
 	return (*line);
 }
 
-char	*make_shyata(char *line)
+static char	*make_shyata(char *line)
 {
 	char	*ret;
 	int		index;
@@ -49,6 +50,8 @@ char	*make_shyata(char *line)
 	index = search(line);
 	if (index < 0)
 		return (NULL);
+	if (ft_strlen(line) - index - 1 == 0)
+		return (NULL);
 	ret = malloc(ft_strlen(line) - index);
 	if (!ret)
 		return (NULL);
@@ -56,7 +59,7 @@ char	*make_shyata(char *line)
 	return (ret);
 }
 
-char	*make_half(char *line)
+static char	*make_half(char *line)
 {
 	char	*ret;
 	int		index;
@@ -80,7 +83,7 @@ char	*make_half(char *line)
 	return (ret);
 }
 
-int	process_shyata(char **line, char **shyata, char **half)
+static int	process_shyata(char **line, char **shyata, char **half)
 {
 	char	*tmp;
 
@@ -100,12 +103,15 @@ int	process_shyata(char **line, char **shyata, char **half)
 char	*get_next_line(int fd)
 {
 	static char	*shyata = NULL;
-	char		*line;	
+	char		*line;
 	char		*half;
 
 	if (fd < 0 || BUFFER_SIZE <= 0 || BUFFER_SIZE > INT_MAX
 		|| read(fd, 0, 0) < 0)
-		return (NULL);
+	{
+		free(shyata);
+		return (shyata = NULL, NULL);
+	}
 	line = NULL;
 	if (shyata)
 		if (process_shyata(&line, &shyata, &half))
